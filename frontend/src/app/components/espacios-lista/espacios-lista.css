@@ -1,0 +1,144 @@
+.espacios-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  color: #495057;
+  margin: 0;
+}
+
+/* Filtros */
+.filtros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.filtro-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filtro-item label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.9rem;
+}
+
+/* Grid de Espacios */
+.espacios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.espacio-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.espacio-imagen {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.espacio-card h3 {
+  margin: 0 0 0.5rem 0;
+  color: #495057;
+}
+
+.descripcion {
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  flex-grow: 1;
+}
+
+.detalles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.detalle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #495057;
+}
+
+.detalle i {
+  color: #6366f1;
+}
+
+.detalle i.disponible {
+  color: #22c55e;
+}
+
+.detalle i.no-disponible {
+  color: #ef4444;
+}
+
+/* Sin resultados */
+.sin-resultados {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem;
+  color: #6c757d;
+}
+
+.sin-resultados i {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+/* Cargando */
+.cargando {
+  text-align: center;
+  padding: 3rem;
+  color: #6c757d;
+}
+
+.cargando i {
+  margin-bottom: 1rem;
+  color: #6366f1;
+}
+
+/* Modal */
+.modal-contenido {
+  padding: 1rem 0;
+}
+
+.campo {
+  margin-bottom: 1.5rem;
+}
+
+.campo label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #495057;
+}
+
+.w-full {
+  width: 100%;
+}

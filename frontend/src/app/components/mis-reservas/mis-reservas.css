@@ -1,0 +1,57 @@
+.reservas-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  color: #495057;
+  margin: 0;
+}
+
+/* Tabla */
+:host ::ng-deep .p-datatable {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+:host ::ng-deep .p-datatable-header {
+  background: #f8f9fa;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+:host ::ng-deep .p-datatable th {
+  background: #6366f1;
+  color: white;
+  font-weight: 600;
+}
+
+/* Sin reservas */
+.sin-reservas {
+  text-align: center;
+  padding: 3rem;
+  color: #6c757d;
+}
+
+.sin-reservas i {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.sin-reservas p {
+  margin: 0.5rem 0;
+}
+
+.sin-reservas p-button {
+  margin-top: 1rem;
+}

@@ -1,0 +1,173 @@
+<!-- Toast Notification -->
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999">
+  <div class="toast show" *ngIf="mostrarToast" [class.bg-success]="tipoToast === 'success'" [class.bg-danger]="tipoToast === 'error'">
+    <div class="toast-body text-white">
+      {{ mensajeToast }}
+    </div>
+  </div>
+</div>
+
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Espacios Disponibles</h1>
+    <button 
+      *ngIf="authService.estaAutenticado()"
+      class="btn btn-secondary"
+      (click)="verMisReservas()"
+    >
+      <i class="bi bi-calendar"></i> Mis Reservas
+    </button>
+  </div>
+
+  <!-- Filtros -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label">Tipo de Espacio</label>
+          <select class="form-select" [(ngModel)]="tipoSeleccionado" (ngModelChange)="aplicarFiltros()">
+            <option value="">Todos los tipos</option>
+            <option *ngFor="let tipo of tiposUnicos" [value]="tipo">{{ tipo }}</option>
+          </select>
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label">Capacidad Mínima</label>
+          <input 
+            type="number" 
+            class="form-control"
+            [(ngModel)]="capacidadMinima"
+            placeholder="Ej: 10"
+            (ngModelChange)="aplicarFiltros()"
+          />
+        </div>
+
+        <div class="col-md-3 d-flex align-items-end">
+          <div class="form-check">
+            <input 
+              class="form-check-input" 
+              type="checkbox" 
+              id="soloDisponibles"
+              [(ngModel)]="soloDisponibles"
+              (ngModelChange)="aplicarFiltros()"
+            />
+            <label class="form-check-label" for="soloDisponibles">
+              Solo disponibles
+            </label>
+          </div>
+        </div>
+
+        <div class="col-md-3 d-flex align-items-end">
+          <button class="btn btn-outline-secondary w-100" (click)="limpiarFiltros()">
+            Limpiar Filtros
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grid de Espacios -->
+  <div *ngIf="cargando" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-2">Cargando espacios...</p>
+  </div>
+
+  <div class="row g-4" *ngIf="!cargando">
+    <div class="col-md-6 col-lg-4" *ngFor="let espacio of espaciosFiltrados">
+      <div class="card h-100">
+        <img [src]="espacio.imagen_url" class="card-img-top" [alt]="espacio.nombre" style="height: 200px; object-fit: cover;">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ espacio.nombre }}</h5>
+          <p class="card-text">{{ espacio.descripcion }}</p>
+          
+          <div class="mt-auto">
+            <div class="mb-2">
+              <small class="text-muted">
+                <i class="bi bi-tag"></i> {{ espacio.tipo }}
+              </small>
+            </div>
+            <div class="mb-2">
+              <small class="text-muted">
+                <i class="bi bi-people"></i> {{ espacio.capacidad }} personas
+              </small>
+            </div>
+            <div class="mb-3">
+              <span class="badge" [class.bg-success]="espacio.disponible" [class.bg-danger]="!espacio.disponible">
+                {{ espacio.disponible ? 'Disponible' : 'No disponible' }}
+              </span>
+            </div>
+            
+            <button 
+              class="btn btn-primary w-100"
+              (click)="abrirModalReserva(espacio)"
+              [disabled]="!espacio.disponible"
+            >
+              Reservar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12" *ngIf="espaciosFiltrados.length === 0">
+      <div class="text-center py-5">
+        <i class="bi bi-inbox" style="font-size: 4rem; color: #6c757d;"></i>
+        <p class="text-muted mt-3">No se encontraron espacios con los filtros seleccionados</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Reserva -->
+<div class="modal" [class.show]="mostrarModalReserva" [style.display]="mostrarModalReserva ? 'block' : 'none'" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Reservar: {{ espacioSeleccionado?.nombre }}</h5>
+        <button type="button" class="btn-close" (click)="cerrarModal()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="nombreEvento" class="form-label">Nombre del Evento</label>
+          <input 
+            type="text"
+            class="form-control" 
+            id="nombreEvento" 
+            [(ngModel)]="nombreEvento"
+            placeholder="Ej: Reunión de Equipo"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="fechaInicio" class="form-label">Fecha y Hora de Inicio</label>
+          <input 
+            type="datetime-local"
+            class="form-control" 
+            id="fechaInicio" 
+            [(ngModel)]="fechaInicio"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="fechaFin" class="form-label">Fecha y Hora de Fin</label>
+          <input 
+            type="datetime-local"
+            class="form-control" 
+            id="fechaFin" 
+            [(ngModel)]="fechaFin"
+          />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="crearReserva()" [disabled]="cargandoReserva">
+          <span *ngIf="cargandoReserva" class="spinner-border spinner-border-sm me-2"></span>
+          Confirmar Reserva
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade" [class.show]="mostrarModalReserva" *ngIf="mostrarModalReserva"></div>

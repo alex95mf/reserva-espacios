@@ -1,0 +1,98 @@
+<!-- Toast Notification -->
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999">
+  <div class="toast show" *ngIf="mostrarToast" [class.bg-success]="tipoToast === 'success'" [class.bg-danger]="tipoToast === 'error'">
+    <div class="toast-body text-white">
+      {{ mensajeToast }}
+    </div>
+  </div>
+</div>
+
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Mis Reservas</h1>
+    <button class="btn btn-outline-secondary" (click)="volverAEspacios()">
+      <i class="bi bi-arrow-left"></i> Ver Espacios
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="cargando" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-2">Cargando reservas...</p>
+  </div>
+
+  <!-- Tabla de Reservas -->
+  <div class="card" *ngIf="!cargando">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Espacio</th>
+              <th>Evento</th>
+              <th>Fecha Inicio</th>
+              <th>Fecha Fin</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let reserva of reservas">
+              <td>{{ reserva.espacio?.nombre }}</td>
+              <td>{{ reserva.nombre_evento }}</td>
+              <td>{{ formatearFecha(reserva.fecha_inicio) }}</td>
+              <td>{{ formatearFecha(reserva.fecha_fin) }}</td>
+              <td>
+                <span class="badge" [ngClass]="obtenerClaseEstado(reserva.estado)">
+                  {{ reserva.estado }}
+                </span>
+              </td>
+              <td>
+                <button 
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="confirmarCancelacion(reserva)"
+                  [disabled]="reserva.estado === 'cancelada'"
+                  title="Cancelar reserva"
+                >
+                  <i class="bi bi-x-circle"></i> Cancelar
+                </button>
+              </td>
+            </tr>
+
+            <tr *ngIf="reservas.length === 0">
+              <td colspan="6" class="text-center py-5">
+                <i class="bi bi-inbox" style="font-size: 4rem; color: #6c757d;"></i>
+                <p class="text-muted mt-3">No tiene reservas registradas</p>
+                <button class="btn btn-primary" (click)="volverAEspacios()">
+                  <i class="bi bi-search"></i> Explorar Espacios
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Confirmación -->
+<div class="modal" [class.show]="mostrarModalConfirmacion" [style.display]="mostrarModalConfirmacion ? 'block' : 'none'" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmar Cancelación</h5>
+        <button type="button" class="btn-close" (click)="cerrarModalConfirmacion()"></button>
+      </div>
+      <div class="modal-body">
+        <p>¿Está seguro que desea cancelar la reserva para "{{ reservaACancelar?.nombre_evento }}"?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModalConfirmacion()">No</button>
+        <button type="button" class="btn btn-danger" (click)="cancelarReserva()">Sí, cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade" [class.show]="mostrarModalConfirmacion" *ngIf="mostrarModalConfirmacion"></div>

@@ -1,0 +1,82 @@
+<div class="registro-container">
+  <div class="card registro-card">
+    <div class="card-header">
+      <h4 class="mb-0">Crear Cuenta</h4>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="formularioRegistro" (ngSubmit)="registrarse()">
+        
+        <div class="mb-3">
+          <label for="name" class="form-label">Nombre Completo</label>
+          <input 
+            type="text"
+            class="form-control" 
+            id="name" 
+            formControlName="name"
+            placeholder="Juan Pérez"
+            [class.is-invalid]="formularioRegistro.get('name')?.invalid && formularioRegistro.get('name')?.touched"
+          />
+          <div class="invalid-feedback" *ngIf="formularioRegistro.get('name')?.invalid && formularioRegistro.get('name')?.touched">
+            El nombre debe tener al menos 3 caracteres
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Correo Electrónico</label>
+          <input 
+            type="email"
+            class="form-control" 
+            id="email" 
+            formControlName="email"
+            placeholder="correo@ejemplo.com"
+            [class.is-invalid]="formularioRegistro.get('email')?.invalid && formularioRegistro.get('email')?.touched"
+          />
+          <div class="invalid-feedback" *ngIf="formularioRegistro.get('email')?.invalid && formularioRegistro.get('email')?.touched">
+            Ingrese un correo válido
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Contraseña</label>
+          <input 
+            type="password"
+            class="form-control" 
+            id="password" 
+            formControlName="password"
+            placeholder="Mínimo 6 caracteres"
+            [class.is-invalid]="formularioRegistro.get('password')?.invalid && formularioRegistro.get('password')?.touched"
+          />
+          <div class="invalid-feedback" *ngIf="formularioRegistro.get('password')?.invalid && formularioRegistro.get('password')?.touched">
+            La contraseña debe tener al menos 6 caracteres
+          </div>
+        </div>
+
+        <div class="alert alert-danger" *ngIf="mensajeError">
+          {{ mensajeError }}
+        </div>
+
+        <div class="alert alert-success" *ngIf="mensajeExito">
+          {{ mensajeExito }}
+        </div>
+
+        <button 
+          type="submit" 
+          class="btn btn-primary w-100 mb-2"
+          [disabled]="formularioRegistro.invalid || cargando"
+        >
+          <span *ngIf="cargando" class="spinner-border spinner-border-sm me-2"></span>
+          Crear Cuenta
+        </button>
+
+        <button 
+          type="button"
+          class="btn btn-outline-secondary w-100"
+          (click)="irALogin()"
+        >
+          Ya tengo cuenta
+        </button>
+
+      </form>
+    </div>
+  </div>
+</div>
