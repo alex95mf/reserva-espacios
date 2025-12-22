@@ -1,0 +1,169 @@
+<p-toast></p-toast>
+
+<div class="detalle-container">
+  <!-- Loading -->
+  <div *ngIf="cargando" class="loading-container">
+    <i class="pi pi-spin pi-spinner loading-icon"></i>
+    <p>Cargando espacio...</p>
+  </div>
+
+  <!-- Contenido del espacio -->
+  <div *ngIf="!cargando && espacio" class="detalle-content">
+    <!-- Botón volver -->
+    <div class="header-actions">
+      <p-button 
+        label="Volver a espacios"
+        icon="pi pi-arrow-left"
+        [outlined]="true"
+        (onClick)="volverALista()"
+        styleClass="btn-volver"
+      ></p-button>
+    </div>
+
+    <!-- Card principal -->
+    <p-card class="espacio-card">
+      <ng-template pTemplate="header">
+        <div class="card-header-image">
+          <img [src]="espacio.imagen_url" [alt]="espacio.nombre" />
+          <div class="header-overlay">
+            <h1>{{ espacio.nombre }}</h1>
+            <p-tag 
+              [value]="espacio.disponible ? 'Disponible' : 'No disponible'"
+              [severity]="obtenerSeveridadDisponibilidad(espacio.disponible)"
+              styleClass="disponibilidad-tag"
+            ></p-tag>
+          </div>
+        </div>
+      </ng-template>
+
+      <div class="espacio-info">
+        <!-- Información principal -->
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="pi pi-tag"></i>
+            </div>
+            <div class="info-content">
+              <span class="info-label">Tipo</span>
+              <span class="info-value">{{ espacio.tipo }}</span>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="pi pi-users"></i>
+            </div>
+            <div class="info-content">
+              <span class="info-label">Capacidad</span>
+              <span class="info-value">{{ espacio.capacidad }} personas</span>
+            </div>
+          </div>
+
+          <div class="info-item" *ngIf="espacio.id">
+            <div class="info-icon">
+              <i class="pi pi-id-card"></i>
+            </div>
+            <div class="info-content">
+              <span class="info-label">ID</span>
+              <span class="info-value">#{{ espacio.id }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Descripción -->
+        <div class="descripcion-section">
+          <h3><i class="pi pi-info-circle"></i> Descripción</h3>
+          <p class="descripcion-text">{{ espacio.descripcion || 'Sin descripción disponible' }}</p>
+        </div>
+
+        <!-- Botón de reserva -->
+        <div class="acciones-section">
+          <p-button 
+            label="Reservar este espacio"
+            icon="pi pi-calendar-plus"
+            (onClick)="abrirModalReserva()"
+            [disabled]="!espacio.disponible"
+            styleClass="btn-reservar"
+            size="large"
+          ></p-button>
+          <p class="texto-ayuda" *ngIf="!espacio.disponible">
+            <i class="pi pi-info-circle"></i>
+            Este espacio no está disponible actualmente
+          </p>
+        </div>
+      </div>
+    </p-card>
+  </div>
+</div>
+
+<!-- Modal de Reserva -->
+<p-dialog 
+  header="Reservar Espacio"
+  [(visible)]="mostrarModalReserva"
+  [modal]="true"
+  [style]="{width: '500px'}"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="modal-reserva"
+>
+  <div class="modal-content">
+    <div class="espacio-info-mini" *ngIf="espacio">
+      <i class="pi pi-building"></i>
+      <span>{{ espacio.nombre }}</span>
+    </div>
+
+    <div class="p-field">
+      <label for="nombreEvento">Nombre del Evento *</label>
+      <input 
+        type="text"
+        pInputText 
+        id="nombreEvento" 
+        [(ngModel)]="nombreEvento"
+        placeholder="Ej: Reunión de equipo"
+        class="w-full"
+      />
+    </div>
+
+    <div class="p-field">
+      <label for="fechaInicio">Fecha y Hora de Inicio *</label>
+      <p-calendar 
+        [(ngModel)]="fechaInicio"
+        [showTime]="true"
+        [minDate]="fechaMinima"
+        hourFormat="24"
+        dateFormat="dd/mm/yy"
+        placeholder="Seleccione fecha y hora"
+        styleClass="w-full"
+      ></p-calendar>
+    </div>
+
+    <div class="p-field">
+      <label for="fechaFin">Fecha y Hora de Fin *</label>
+      <p-calendar 
+        [(ngModel)]="fechaFin"
+        [showTime]="true"
+        [minDate]="fechaInicio || fechaMinima"
+        hourFormat="24"
+        dateFormat="dd/mm/yy"
+        placeholder="Seleccione fecha y hora"
+        styleClass="w-full"
+      ></p-calendar>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button 
+      label="Cancelar"
+      icon="pi pi-times"
+      (onClick)="cerrarModalReserva()"
+      severity="secondary"
+      [outlined]="true"
+    ></p-button>
+    <p-button 
+      label="Confirmar Reserva"
+      icon="pi pi-check"
+      (onClick)="crearReserva()"
+      [loading]="cargandoReserva"
+    ></p-button>
+  </ng-template>
+</p-dialog>

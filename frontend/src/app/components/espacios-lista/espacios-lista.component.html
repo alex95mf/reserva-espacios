@@ -98,13 +98,23 @@
       </div>
 
       <ng-template pTemplate="footer">
-        <p-button 
-          label="Reservar"
-          icon="pi pi-calendar-plus"
-          (onClick)="abrirModalReserva(espacio)"
-          [disabled]="!espacio.disponible"
-          styleClass="w-full"
-        ></p-button>
+        <div class="card-footer-buttons">
+          <p-button 
+            label="Ver Detalle"
+            icon="pi pi-eye"
+            (onClick)="verDetalle(espacio)"
+            [outlined]="true"
+            severity="secondary"
+            styleClass="btn-detalle"
+          ></p-button>
+          <p-button 
+            label="Reservar"
+            icon="pi pi-calendar-plus"
+            (onClick)="abrirModalReserva(espacio)"
+            [disabled]="!espacio.disponible"
+            styleClass="btn-reservar-card"
+          ></p-button>
+        </div>
       </ng-template>
     </p-card>
 

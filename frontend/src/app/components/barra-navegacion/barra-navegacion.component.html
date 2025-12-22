@@ -8,13 +8,13 @@
 
   <ng-template pTemplate="end">
     <div class="navbar-end">
-      <div *ngIf="authService.estaAutenticado()" class="usuario-badge">
+      <div *ngIf="estaAutenticado" class="usuario-badge">
         <i class="pi pi-user"></i>
-        <span>{{ obtenerNombreUsuario() }}</span>
+        <span>{{ nombreUsuario }}</span>
       </div>
 
       <p-button 
-        *ngIf="!authService.estaAutenticado()"
+        *ngIf="!estaAutenticado"
         label="Iniciar Sesión"
         icon="pi pi-sign-in"
         (onClick)="irIniciarSesion()"
@@ -23,7 +23,7 @@
       ></p-button>
 
       <p-button 
-        *ngIf="!authService.estaAutenticado()"
+        *ngIf="!estaAutenticado"
         label="Registrarse"
         icon="pi pi-user-plus"
         (onClick)="irRegistro()"
@@ -31,7 +31,7 @@
       ></p-button>
 
       <p-button 
-        *ngIf="authService.estaAutenticado()"
+        *ngIf="estaAutenticado"
         label="Cerrar Sesión"
         icon="pi pi-sign-out"
         (onClick)="cerrarSesion()"
