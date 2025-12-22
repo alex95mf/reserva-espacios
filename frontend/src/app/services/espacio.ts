@@ -38,6 +38,10 @@ export class EspacioService {
     return this.http.get<Espacio>(`${this.apiUrl}/${id}`);
   }
 
+  obtenerPorId(id: number): Observable<Espacio> {
+    return this.obtener(id);
+  }
+
   crear(espacio: Partial<Espacio>): Observable<Espacio> {
     return this.http.post<Espacio>(this.apiUrl, espacio);
   }

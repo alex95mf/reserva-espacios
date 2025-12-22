@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MenubarModule } from 'primeng/menubar';
 import { ButtonModule } from 'primeng/button';
 import { MenuItem } from 'primeng/api';
+import { Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth';
-
 
 @Component({
   selector: 'app-barra-navegacion',
@@ -14,17 +14,25 @@ import { AuthService } from '../../services/auth';
   templateUrl: './barra-navegacion.component.html',
   styleUrl: './barra-navegacion.component.css'
 })
-export class BarraNavegacionComponent implements OnInit {
+export class BarraNavegacionComponent implements OnInit, OnDestroy {
   items: MenuItem[] = [];
+  nombreUsuario: string = '';
+  estaAutenticado: boolean = false;
+  private suscripciones: Subscription[] = [];
 
   constructor(
     public authService: AuthService,
     public router: Router
   ) {}
 
+  /**
+   * Inicializar el componente y suscribirse a los observables
+   */
   ngOnInit(): void {
-    this.authService.usuarioActual$.subscribe(usuario => {
+    // Suscribirse al estado del usuario actual
+    const usuarioSub = this.authService.usuarioActual$.subscribe(usuario => {
       if (usuario) {
+        this.nombreUsuario = usuario.name;
         this.items = [
           {
             label: 'Espacios',
@@ -39,10 +47,11 @@ export class BarraNavegacionComponent implements OnInit {
           {
             label: 'Gestión de Espacios',
             icon: 'pi pi-cog',
-            command: () => this.router.navigate(['/admin/espacios'])
+            command: () => this.router.navigate(['/administracion/espacios'])
           }
         ];
       } else {
+        this.nombreUsuario = '';
         this.items = [
           {
             label: 'Espacios',
@@ -52,33 +61,49 @@ export class BarraNavegacionComponent implements OnInit {
         ];
       }
     });
+
+    // Suscribirse al estado de autenticación
+    const authSub = this.authService.autenticado$.subscribe(autenticado => {
+      this.estaAutenticado = autenticado;
+    });
+
+    // Guardar las suscripciones para limpiarlas después
+    this.suscripciones.push(usuarioSub, authSub);
   }
 
+  /**
+   * Limpiar suscripciones al destruir el componente
+   */
+  ngOnDestroy(): void {
+    this.suscripciones.forEach(sub => sub.unsubscribe());
+  }
+
+  /**
+   * Navegar a la página de iniciar sesión
+   */
   irIniciarSesion(): void {
     this.router.navigate(['/iniciar-sesion']);
   }
 
+  /**
+   * Navegar a la página de registro
+   */
   irRegistro(): void {
     this.router.navigate(['/registro']);
   }
 
+  /**
+   * Cerrar sesión del usuario y redirigir a espacios
+   */
   cerrarSesion(): void {
-    this.authService.logout();
-    this.router.navigate(['/espacios']);
-  }
-
-  obtenerNombreUsuario(): string {
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        // Intentar diferentes nombres de campo del payload
-        return payload.sub?.name || payload.name || payload.usuario || payload.email || 'Usuario';
-      } catch (e) {
-        console.error('Error al decodificar token:', e);
-        return 'Usuario';
+    this.authService.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/espacios']);
+      },
+      error: () => {
+        // Aun con error, redirigir a espacios
+        this.router.navigate(['/espacios']);
       }
-    }
-    return 'Usuario';
+    });
   }
 }

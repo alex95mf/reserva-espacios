@@ -67,10 +67,16 @@ export class EspaciosListaComponent implements OnInit {
     private messageService: MessageService
   ) {}
 
+  /**
+   * Inicializar el componente
+   */
   ngOnInit(): void {
     this.cargarEspacios();
   }
 
+  /**
+   * Cargar todos los espacios desde el backend
+   */
   cargarEspacios(): void {
     this.cargando = true;
     this.espacioService.listar().subscribe({
@@ -87,11 +93,17 @@ export class EspaciosListaComponent implements OnInit {
     });
   }
 
+  /**
+   * Extraer tipos únicos de espacios para el filtro
+   */
   extraerTiposUnicos(): void {
     const tipos = [...new Set(this.espacios.map(e => e.tipo))];
     this.tiposUnicos = tipos.map(tipo => ({ label: tipo, value: tipo }));
   }
 
+  /**
+   * Aplicar filtros a la lista de espacios
+   */
   aplicarFiltros(): void {
     this.espaciosFiltrados = this.espacios.filter(espacio => {
       const cumpleTipo = !this.tipoSeleccionado || espacio.tipo === this.tipoSeleccionado;
@@ -102,6 +114,9 @@ export class EspaciosListaComponent implements OnInit {
     });
   }
 
+  /**
+   * Limpiar todos los filtros aplicados
+   */
   limpiarFiltros(): void {
     this.tipoSeleccionado = '';
     this.capacidadMinima = null;
@@ -109,6 +124,16 @@ export class EspaciosListaComponent implements OnInit {
     this.espaciosFiltrados = this.espacios;
   }
 
+  /**
+   * Navegar al detalle del espacio
+   */
+  verDetalle(espacio: Espacio): void {
+    this.router.navigate(['/espacios/detalle', espacio.id]);
+  }
+
+  /**
+   * Abrir modal para crear una reserva
+   */
   abrirModalReserva(espacio: Espacio): void {
     if (!this.authService.estaAutenticado()) {
       this.router.navigate(['/iniciar-sesion']);
@@ -122,10 +147,16 @@ export class EspaciosListaComponent implements OnInit {
     this.fechaFin = null;
   }
 
+  /**
+   * Cerrar modal de reserva
+   */
   cerrarModal(): void {
     this.mostrarModalReserva = false;
   }
 
+  /**
+   * Crear una nueva reserva
+   */
   crearReserva(): void {
     if (!this.espacioSeleccionado || !this.nombreEvento || !this.fechaInicio || !this.fechaFin) {
       this.mostrarMensaje('warn', 'Advertencia', 'Complete todos los campos');
@@ -154,6 +185,9 @@ export class EspaciosListaComponent implements OnInit {
     });
   }
 
+  /**
+   * Formatear fecha para enviar a la API
+   */
   formatearFechaParaAPI(fecha: Date): string {
     const year = fecha.getFullYear();
     const month = String(fecha.getMonth() + 1).padStart(2, '0');
@@ -165,10 +199,16 @@ export class EspaciosListaComponent implements OnInit {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   }
 
+  /**
+   * Navegar a la página de mis reservas
+   */
   verMisReservas(): void {
     this.router.navigate(['/mis-reservas']);
   }
 
+  /**
+   * Mostrar mensaje toast
+   */
   mostrarMensaje(severity: string, summary: string, detail: string): void {
     this.messageService.add({ severity, summary, detail });
   }
