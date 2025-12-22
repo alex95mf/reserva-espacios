@@ -15,7 +15,7 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { MessageService, ConfirmationService } from 'primeng/api';
-import { EspacioService } from '../../services/espacio';
+import { EspacioService } from '../../services/espacio.service';
 import { Espacio } from '../../models/espacio.model';
 
 @Component({

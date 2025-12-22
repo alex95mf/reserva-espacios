@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ReservaService } from '../../services/reserva';
+import { ReservaService } from '../../services/reserva.service';
 import { Reserva } from '../../models/reserva.model';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';

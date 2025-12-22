@@ -5,7 +5,7 @@ import { MenubarModule } from 'primeng/menubar';
 import { ButtonModule } from 'primeng/button';
 import { MenuItem } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { AuthService } from '../../services/auth';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-barra-navegacion',

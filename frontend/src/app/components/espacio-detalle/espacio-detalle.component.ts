@@ -11,9 +11,9 @@ import { CalendarModule } from 'primeng/calendar';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
-import { EspacioService } from '../../services/espacio';
-import { ReservaService } from '../../services/reserva';
-import { AuthService } from '../../services/auth';
+import { EspacioService } from '../../services/espacio.service';
+import { ReservaService } from '../../services/reserva.service';
+import { AuthService } from '../../services/auth.service';
 import { Espacio } from '../../models/espacio.model';
 
 @Component({
