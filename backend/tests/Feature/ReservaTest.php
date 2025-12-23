@@ -16,7 +16,7 @@ class ReservaTest extends TestCase
     public function test_usuario_autenticado_puede_crear_reserva()
     {
         $user = User::factory()->create();
-        $espacio = Espacio::factory()->create();
+        $espacio = Espacio::factory()->create(['disponible' => true]);
 
         $fechaInicio = Carbon::now()->addDays(2);
         $fechaFin = Carbon::now()->addDays(2)->addHours(2);
@@ -58,7 +58,7 @@ class ReservaTest extends TestCase
     public function test_no_permite_reservas_con_superposicion_de_horarios()
     {
         $user = User::factory()->create();
-        $espacio = Espacio::factory()->create();
+        $espacio = Espacio::factory()->create(['disponible' => true]);
 
         $fechaInicio = Carbon::now()->addDays(2)->setTime(10, 0);
         $fechaFin = Carbon::now()->addDays(2)->setTime(12, 0);

@@ -1,18 +1,25 @@
+<!-- Barra de navegación principal -->
 <p-menubar [model]="items" styleClass="navbar-custom">
+  
+  <!-- Sección izquierda: Logo de la aplicación -->
   <ng-template pTemplate="start">
     <div class="logo-container">
       <i class="pi pi-building logo-icon"></i>
-      <span class="logo-text">Reserva de Espacios</span>
+      <span class="logo-text">ReservaloApp</span>
     </div>
   </ng-template>
 
+  <!-- Sección derecha: Usuario y botones de autenticación -->
   <ng-template pTemplate="end">
     <div class="navbar-end">
+      
+      <!-- Badge con nombre del usuario autenticado -->
       <div *ngIf="estaAutenticado" class="usuario-badge">
         <i class="pi pi-user"></i>
         <span>{{ nombreUsuario }}</span>
       </div>
 
+      <!-- Botón Iniciar Sesión (solo para usuarios no autenticados) -->
       <p-button 
         *ngIf="!estaAutenticado"
         label="Iniciar Sesión"
@@ -22,6 +29,7 @@
         styleClass="btn-login"
       ></p-button>
 
+      <!-- Botón Registrarse (solo para usuarios no autenticados) -->
       <p-button 
         *ngIf="!estaAutenticado"
         label="Registrarse"
@@ -30,6 +38,7 @@
         styleClass="btn-register"
       ></p-button>
 
+      <!-- Botón Cerrar Sesión (solo para usuarios autenticados) -->
       <p-button 
         *ngIf="estaAutenticado"
         label="Cerrar Sesión"

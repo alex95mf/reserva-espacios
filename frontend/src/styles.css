@@ -1,107 +1,67 @@
-/* Toasts */
-::ng-deep .p-toast {
-  opacity: 0.98;
-  z-index: 9999;
+/* Estilos globales para el menú desplegable del navbar */
+body .p-menubar .p-menubar-root-list > .p-menuitem > .p-submenu-list {
+  background: white !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2) !important;
+  padding: 0.5rem 0 !important;
+  min-width: 220px !important;
+  margin-top: 0.5rem !important;
 }
 
-::ng-deep .p-toast .p-toast-message {
-  margin: 0 0 1rem 0;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  border-radius: 12px;
-  border: none;
-  backdrop-filter: blur(10px);
-  animation: slideInRight 0.3s ease-out;
+body .p-menubar .p-submenu-list .p-menuitem {
+  background: white !important;
 }
 
-@keyframes slideInRight {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+body .p-menubar .p-submenu-list .p-menuitem .p-menuitem-link {
+  color: #2d3748 !important;
+  background: white !important;
+  padding: 0.75rem 1.25rem !important;
+  transition: all 0.3s !important;
+  border-radius: 0 !important;
 }
 
-::ng-deep .p-toast .p-toast-message.p-toast-message-success {
-  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-  color: white;
+body .p-menubar .p-submenu-list .p-menuitem .p-menuitem-link:hover {
+  background: #f7fafc !important;
+  color: #667eea !important;
+  transform: none !important;
 }
 
-::ng-deep .p-toast .p-toast-message.p-toast-message-success .p-toast-message-icon,
-::ng-deep .p-toast .p-toast-message.p-toast-message-success .p-toast-icon-close {
-  color: white;
+body .p-menubar .p-submenu-list .p-menuitem .p-menuitem-link .p-menuitem-icon {
+  color: #667eea !important;
+  margin-right: 0.75rem !important;
 }
 
-::ng-deep .p-toast .p-toast-message.p-toast-message-error {
-  background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
-  color: white;
+body .p-menubar .p-submenu-list .p-menuitem .p-menuitem-link .p-menuitem-text {
+  color: #2d3748 !important;
+  font-weight: 600 !important;
 }
 
-::ng-deep .p-toast .p-toast-message.p-toast-message-error .p-toast-message-icon,
-::ng-deep .p-toast .p-toast-message.p-toast-message-error .p-toast-icon-close {
-  color: white;
+body .p-menubar .p-submenu-list .p-menuitem .p-menuitem-link:hover .p-menuitem-text {
+  color: #667eea !important;
 }
 
-::ng-deep .p-toast .p-toast-message.p-toast-message-warn {
-  background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
-  color: white;
+body .p-menubar .p-submenu-list .p-menuitem .p-menuitem-link:hover .p-menuitem-icon {
+  color: #667eea !important;
 }
 
-::ng-deep .p-toast .p-toast-message.p-toast-message-warn .p-toast-message-icon,
-::ng-deep .p-toast .p-toast-message.p-toast-message-warn .p-toast-icon-close {
-  color: white;
+body .p-menubar-root-list .p-submenu-list .p-menuitem-text {
+  color: #2d3748 !important;
 }
 
-::ng-deep .p-toast .p-toast-message.p-toast-message-info {
-  background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
-  color: white;
+body .p-menubar-root-list .p-submenu-list .p-menuitem-icon {
+  color: #667eea !important;
 }
 
-::ng-deep .p-toast .p-toast-message.p-toast-message-info .p-toast-message-icon,
-::ng-deep .p-toast .p-toast-message.p-toast-message-info .p-toast-icon-close {
-  color: white;
+/* Selector específico usando atributo data-pc-section */
+span.p-menuitem-text[data-pc-section="label"] {
+  color: #2d3748 !important;
 }
 
-::ng-deep .p-toast .p-toast-message .p-toast-message-content {
-  padding: 1.25rem;
-  border: none;
+body .p-menubar .p-submenu-list span.p-menuitem-text[data-pc-section="label"] {
+  color: #2d3748 !important;
 }
 
-::ng-deep .p-toast .p-toast-message .p-toast-summary {
-  font-weight: 700;
-  font-size: 1rem;
-  margin-bottom: 0.25rem;
-}
-
-::ng-deep .p-toast .p-toast-message .p-toast-detail {
-  font-size: 0.95rem;
-  opacity: 0.95;
-  line-height: 1.5;
-}
-
-::ng-deep .p-toast .p-toast-message .p-toast-message-icon {
-  font-size: 1.75rem;
-}
-
-::ng-deep .p-toast .p-toast-message .p-toast-icon-close {
-  width: 1.75rem;
-  height: 1.75rem;
-  border-radius: 50%;
-  transition: all 0.2s;
-}
-
-::ng-deep .p-toast .p-toast-message .p-toast-icon-close:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-@media (max-width: 768px) {
-  ::ng-deep .p-toast {
-    width: 90vw;
-  }
-  
-  ::ng-deep .p-toast .p-toast-message {
-    margin: 0 0 0.5rem 0;
-  }
+body .p-menubar .p-submenu-list .p-menuitem:hover span.p-menuitem-text[data-pc-section="label"] {
+  color: #667eea !important;
 }
