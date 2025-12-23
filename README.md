@@ -1,41 +1,42 @@
-# 🏢 Sistema de Reserva de Espacios
+# Sistema de Reserva de Espacios
 
 Sistema full-stack para la gestión y reserva de espacios para eventos, desarrollado con **Angular** y **Laravel**.
 
 ---
 
-## 📋 Descripción
+## Descripción
 
-Aplicación web que permite a los usuarios:
+Aplicación web que proporciona las siguientes funcionalidades:
 
-- 🔍 **Ver catálogo de espacios** disponibles con filtros avanzados
-- 📅 **Reservar espacios** para eventos con validación de disponibilidad
-- 📊 **Gestionar reservas propias** (crear, ver, cancelar)
-- ⚙️ **Administrar espacios** (CRUD completo - solo usuarios autenticados)
-- 🔐 **Autenticación segura** con JWT
-- 📱 **Diseño responsivo** y profesional con PrimeNG
+- Ver catálogo de espacios disponibles con filtros avanzados
+- Reservar espacios para eventos con validación de disponibilidad
+- Gestionar reservas propias (crear, visualizar, cancelar)
+- Administrar espacios (CRUD completo - requiere autenticación)
+- Autenticación segura mediante JWT
+- Interfaz responsiva y profesional desarrollada con PrimeNG
 
 ---
 
-## 🛠️ Tecnologías Utilizadas
+## Stack Tecnológico
 
-### **Backend**
+### Backend
 - **Laravel 11** - Framework PHP
-- **PostgreSQL** - Base de datos
+- **PostgreSQL** - Sistema de gestión de base de datos
 - **JWT Auth** - Autenticación mediante tokens
-- **PHPUnit** - Testing
+- **PHPUnit** - Framework de testing
 - **Swagger/OpenAPI** - Documentación de API
 
-### **Frontend**
+### Frontend
 - **Angular 20.3.10** - Framework JavaScript
 - **PrimeNG** - Biblioteca de componentes UI
 - **TypeScript** - Lenguaje tipado
 - **RxJS** - Programación reactiva
-- **Jasmine/Karma** - Testing
+- **Jasmine/Karma** - Framework de testing
 
 ---
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
+
 ```
 reserva-espacios/
 ├── backend/                 # API Laravel
@@ -64,9 +65,9 @@ reserva-espacios/
 
 ---
 
-## ⚙️ Requisitos Previos
+## Requisitos del Sistema
 
-Antes de comenzar, asegúrate de tener instalado:
+El proyecto requiere las siguientes dependencias instaladas:
 
 - **Node.js** v24+
 - **PHP** 8.2+
@@ -76,9 +77,10 @@ Antes de comenzar, asegúrate de tener instalado:
 
 ---
 
-## 🚀 Instalación
+## Instalación
 
-### **1. Clonar el repositorio**
+### 1. Clonar el repositorio
+
 ```bash
 git clone https://github.com/alex95mf/reserva-espacios.git
 cd reserva-espacios
@@ -86,20 +88,23 @@ cd reserva-espacios
 
 ---
 
-### **2. Configurar Backend (Laravel)**
+### 2. Configuración del Backend (Laravel)
 
-#### a) Instalar dependencias
+#### Instalación de dependencias
+
 ```bash
 cd backend
 composer install
 ```
 
-#### b) Configurar archivo de entorno
+#### Configuración del entorno
+
 ```bash
 cp .env.example .env
 ```
 
-Edita el archivo `.env` con tus credenciales de PostgreSQL:
+Configurar el archivo `.env` con las credenciales de PostgreSQL:
+
 ```env
 DB_CONNECTION=pgsql
 DB_HOST=127.0.0.1
@@ -111,41 +116,45 @@ DB_PASSWORD=tu_contraseña
 JWT_SECRET=tu_clave_secreta_jwt
 ```
 
-#### c) Generar clave de aplicación
-```bash
-php artisan key:generate
-```
+#### Generación de claves
 
-#### d) Generar clave JWT
 ```bash
+# Clave de aplicación
+php artisan key:generate
+
+# Clave JWT
 php artisan jwt:secret
 ```
 
-#### e) Ejecutar migraciones y seeders
+#### Inicialización de la base de datos
+
 ```bash
 php artisan migrate --seed
 ```
 
-#### f) Generar documentación Swagger
+#### Generación de documentación
+
 ```bash
 php artisan l5-swagger:generate
 ```
 
 ---
 
-### **3. Configurar Frontend (Angular)**
+### 3. Configuración del Frontend (Angular)
 
-#### a) Instalar dependencias
+#### Instalación de dependencias
+
 ```bash
 cd frontend
 npm install
 ```
 
-#### b) Configurar API URL (opcional)
+#### Configuración de la URL de la API (opcional)
 
-Si tu backend NO está en `http://localhost:8000`, edita:
+Para entornos donde el backend no esté en `http://localhost:8000`, modificar el archivo:
 
 `frontend/src/environments/environment.ts`
+
 ```typescript
 export const environment = {
   production: false,
@@ -155,49 +164,53 @@ export const environment = {
 
 ---
 
-## ▶️ Ejecución
+## Ejecución
 
-### **Backend**
+### Backend
+
 ```bash
 cd backend
 php artisan serve
 ```
 
-El backend estará disponible en: `http://localhost:8000`
+Servidor disponible en: `http://localhost:8000`
 
 ---
 
-### **Frontend**
+### Frontend
 
-En otra terminal:
+En una terminal separada:
+
 ```bash
 cd frontend
 ng serve
 ```
 
-El frontend estará disponible en: `http://localhost:4200`
+Aplicación disponible en: `http://localhost:4200`
 
 ---
 
-## 🧪 Testing
+## Testing
 
-### **Backend (PHPUnit)**
+### Backend (PHPUnit)
 
-Ejecutar todos los tests:
+Ejecución de la suite de tests:
+
 ```bash
 cd backend
 php artisan test
 ```
 
 **Cobertura de tests:**
-- ✅ Autenticación (6 tests)
-- ✅ Espacios (8 tests)
-- ✅ Reservas (8 tests)
-- ✅ **Total: 24 tests pasando**
+- Autenticación: 6 tests
+- Espacios: 8 tests
+- Reservas: 8 tests
+- **Total: 24 tests**
 
 ---
 
-### **Frontend (Jasmine/Karma)**
+### Frontend (Jasmine/Karma)
+
 ```bash
 cd frontend
 ng test
@@ -205,93 +218,95 @@ ng test
 
 ---
 
-## 📚 Documentación API
+## Documentación de la API
 
-La documentación completa de la API está disponible en **Swagger UI**:
+La documentación completa de la API está disponible mediante **Swagger UI** en:
+
 ```
 http://localhost:8000/api/documentation
 ```
 
-### **Endpoints Principales:**
+### Endpoints Principales
 
-#### **Autenticación**
-- `POST /api/registrar` - Registrar nuevo usuario
-- `POST /api/login` - Iniciar sesión (retorna JWT)
-- `GET /api/yo` - Obtener usuario autenticado
-- `POST /api/logout` - Cerrar sesión
+#### Autenticación
+- `POST /api/registrar` - Registro de nuevos usuarios
+- `POST /api/login` - Inicio de sesión (retorna JWT)
+- `GET /api/yo` - Obtención de usuario autenticado
+- `POST /api/logout` - Cierre de sesión
 
-#### **Espacios**
-- `GET /api/espacios` - Listar espacios (con filtros)
-- `POST /api/espacios` - Crear espacio (requiere auth)
-- `GET /api/espacios/{id}` - Obtener espacio
-- `PUT /api/espacios/{id}` - Actualizar espacio (requiere auth)
-- `DELETE /api/espacios/{id}` - Eliminar espacio (requiere auth)
+#### Espacios
+- `GET /api/espacios` - Listado de espacios con filtros opcionales
+- `POST /api/espacios` - Creación de espacio (requiere autenticación)
+- `GET /api/espacios/{id}` - Obtención de espacio específico
+- `PUT /api/espacios/{id}` - Actualización de espacio (requiere autenticación)
+- `DELETE /api/espacios/{id}` - Eliminación de espacio (requiere autenticación)
 
-#### **Reservas**
-- `GET /api/reservas` - Listar reservas del usuario (requiere auth)
-- `POST /api/reservas` - Crear reserva (requiere auth)
-- `GET /api/reservas/{id}` - Obtener reserva (requiere auth)
-- `PUT /api/reservas/{id}` - Actualizar reserva (requiere auth)
-- `DELETE /api/reservas/{id}` - Cancelar reserva (requiere auth)
-
----
-
-## ✨ Características Implementadas
-
-### **Obligatorias**
-- ✅ Autenticación JWT completa (registro, login, logout)
-- ✅ CRUD de espacios con filtros (tipo, capacidad, disponibilidad)
-- ✅ Sistema de reservas con validación de superposición de horarios
-- ✅ Gestión de reservas por usuario (ver, modificar, cancelar)
-- ✅ API RESTful documentada con Swagger
-- ✅ Suite de testing del backend (PHPUnit)
-- ✅ README con instrucciones completas
-
-### **Opcionales Implementadas**
-- ✅ Testing de servicios del frontend
-- ✅ Vista detallada de espacios
-- ✅ Sistema de notificaciones (Toast) mejorado
-- ✅ Diseño profesional con PrimeNG
-- ✅ Validaciones en frontend y backend
-- ✅ Manejo de errores robusto
-- ✅ Diseño responsivo
+#### Reservas
+- `GET /api/reservas` - Listado de reservas del usuario (requiere autenticación)
+- `POST /api/reservas` - Creación de reserva (requiere autenticación)
+- `GET /api/reservas/{id}` - Obtención de reserva específica (requiere autenticación)
+- `PUT /api/reservas/{id}` - Actualización de reserva (requiere autenticación)
+- `DELETE /api/reservas/{id}` - Cancelación de reserva (requiere autenticación)
 
 ---
 
-## 🔐 Autenticación
+## Características Implementadas
 
-El sistema usa **JWT (JSON Web Tokens)** para autenticación.
+### Requisitos Funcionales Principales
+- Autenticación JWT completa (registro, login, logout)
+- CRUD de espacios con sistema de filtros (tipo, capacidad, disponibilidad)
+- Sistema de reservas con validación de superposición de horarios
+- Gestión de reservas por usuario (visualización, modificación, cancelación)
+- API RESTful documentada con Swagger
+- Suite de testing del backend (PHPUnit)
+- Documentación técnica completa
 
-### **Flujo de autenticación:**
+### Características Adicionales
+- Testing de servicios del frontend
+- Vista detallada de espacios
+- Sistema de notificaciones mediante Toast
+- Diseño profesional implementado con PrimeNG
+- Validaciones en frontend y backend
+- Manejo robusto de errores
+- Diseño responsivo
 
-1. Usuario se registra o inicia sesión
-2. Backend genera un token JWT
-3. Frontend almacena el token en `localStorage`
-4. Todas las peticiones autenticadas incluyen el token en el header:
+---
+
+## Arquitectura de Autenticación
+
+El sistema implementa **JWT (JSON Web Tokens)** como mecanismo de autenticación.
+
+### Flujo de autenticación:
+
+1. El usuario realiza el registro o inicio de sesión
+2. El backend genera un token JWT
+3. El frontend almacena el token en `localStorage`
+4. Las peticiones autenticadas incluyen el token en el header de autorización:
+
 ```
-   Authorization: Bearer {token}
+Authorization: Bearer {token}
 ```
 
 ---
 
-## 🎨 Características de Diseño
+## Características de la Interfaz
 
-- **Navbar dinámico** que cambia según el estado de autenticación
-- **Cards de espacios** con información visual
-- **Filtros avanzados** para búsqueda de espacios
-- **Modal de reserva** con validación de fechas
-- **Notificaciones toast** con animaciones
-- **Vista de detalle** de espacios
-- **Gestión de reservas** con tabla interactiva
-
----
-
-## 📧 Contacto
-
-Desarrollado como prueba técnica Full Stack
+- Barra de navegación dinámica según estado de autenticación
+- Sistema de tarjetas para visualización de espacios
+- Filtros avanzados para búsqueda de espacios
+- Modal de reserva con validación de fechas
+- Sistema de notificaciones con animaciones
+- Vista detallada de espacios individuales
+- Tabla interactiva para gestión de reservas
 
 ---
 
-## 📄 Licencia
+## Información de Contacto
+
+Proyecto desarrollado como prueba técnica Full Stack.
+
+---
+
+## Licencia
 
 Este proyecto fue desarrollado como prueba técnica.
