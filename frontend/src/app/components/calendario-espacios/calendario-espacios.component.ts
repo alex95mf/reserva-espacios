@@ -1,41 +1,44 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { CalendarOptions } from '@fullcalendar/core';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import interactionPlugin from '@fullcalendar/interaction';
+import esLocale from '@fullcalendar/core/locales/es';
 import { EspacioService } from '../../services/espacio.service';
 import { ReservaService } from '../../services/reserva.service';
 import { AuthService } from '../../services/auth.service';
 import { Espacio } from '../../models/espacio.model';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
-import { ImageModule } from 'primeng/image';
 import { DialogModule } from 'primeng/dialog';
-import { CalendarModule } from 'primeng/calendar';
 import { InputTextModule } from 'primeng/inputtext';
+import { CalendarModule } from 'primeng/calendar';
 import { ToastModule } from 'primeng/toast';
+import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 
 @Component({
-  selector: 'app-espacio-detalle',
+  selector: 'app-calendario-espacios',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
+    FullCalendarModule,
     CardModule,
     ButtonModule,
-    TagModule,
-    ImageModule,
     DialogModule,
-    CalendarModule,
     InputTextModule,
-    ToastModule
+    CalendarModule,
+    ToastModule,
+    FormsModule
   ],
   providers: [MessageService],
-  templateUrl: './espacio-detalle.component.html',
-  styleUrl: './espacio-detalle.component.css'
+  templateUrl: './calendario-espacios.component.html',
+  styleUrl: './calendario-espacios.component.css'
 })
-export class EspacioDetalleComponent implements OnInit {
+export class CalendarioEspaciosComponent implements OnInit {
   espacio: Espacio | null = null;
   espacioId: number = 0;
   cargando = false;
@@ -44,7 +47,36 @@ export class EspacioDetalleComponent implements OnInit {
   nombreEvento = '';
   fechaInicio: Date | null = null;
   fechaFin: Date | null = null;
-  fechaMinima = new Date();
+  fechaSeleccionada: Date | null = null;
+  
+  calendarOptions: CalendarOptions = {
+    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+    initialView: 'timeGridWeek',
+    locale: esLocale,
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,timeGridDay'
+    },
+    buttonText: {
+      today: 'Hoy',
+      month: 'Mes',
+      week: 'Semana',
+      day: 'Día'
+    },
+    slotMinTime: '07:00:00',
+    slotMaxTime: '22:00:00',
+    allDaySlot: false,
+    height: 'auto',
+    nowIndicator: true,
+    selectable: true,
+    selectMirror: true,
+    weekends: true,
+    editable: false,
+    events: [],
+    select: this.handleDateSelect.bind(this),
+    eventClick: this.handleEventClick.bind(this)
+  };
 
   constructor(
     private route: ActivatedRoute,
@@ -61,6 +93,7 @@ export class EspacioDetalleComponent implements OnInit {
   ngOnInit(): void {
     this.espacioId = Number(this.route.snapshot.paramMap.get('id'));
     this.cargarEspacio();
+    this.cargarReservas();
   }
 
   /**
@@ -82,30 +115,59 @@ export class EspacioDetalleComponent implements OnInit {
   }
 
   /**
-   * Abrir modal para crear una reserva
+   * Cargar reservas del espacio y mostrarlas en el calendario
    */
-  abrirModalReserva(): void {
+  cargarReservas(): void {
+    this.reservaService.obtenerPorEspacio(this.espacioId).subscribe({
+      next: (reservas) => {
+        const eventos = reservas
+          .filter(r => r.estado !== 'cancelada')
+          .map(reserva => ({
+            title: reserva.nombre_evento,
+            start: reserva.fecha_inicio,
+            end: reserva.fecha_fin,
+            backgroundColor: '#667eea',
+            borderColor: '#764ba2',
+            extendedProps: {
+              reservaId: reserva.id
+            }
+          }));
+        
+        this.calendarOptions.events = eventos;
+      },
+      error: () => {
+        this.mostrarMensaje('error', 'Error', 'No se pudieron cargar las reservas');
+      }
+    });
+  }
+
+  /**
+   * Manejar selección de fecha/hora en el calendario
+   */
+  handleDateSelect(selectInfo: any): void {
     if (!this.authService.estaAutenticado()) {
       this.mostrarMensaje('warn', 'Advertencia', 'Debes iniciar sesión para reservar');
       this.router.navigate(['/iniciar-sesion']);
       return;
     }
 
-    this.mostrarModalReserva = true;
+    this.fechaSeleccionada = selectInfo.start;
+    this.fechaInicio = new Date(selectInfo.start);
+    this.fechaFin = new Date(selectInfo.end);
     this.nombreEvento = '';
-    this.fechaInicio = null;
-    this.fechaFin = null;
+    this.mostrarModalReserva = true;
   }
 
   /**
-   * Cerrar modal de reserva
+   * Manejar click en un evento del calendario
    */
-  cerrarModalReserva(): void {
-    this.mostrarModalReserva = false;
+  handleEventClick(clickInfo: any): void {
+    const evento = clickInfo.event;
+    this.mostrarMensaje('info', 'Reserva', `${evento.title}`);
   }
 
   /**
-   * Crear nueva reserva
+   * Crear nueva reserva desde el calendario
    */
   crearReserva(): void {
     if (!this.nombreEvento || !this.fechaInicio || !this.fechaFin) {
@@ -124,6 +186,7 @@ export class EspacioDetalleComponent implements OnInit {
       next: () => {
         this.mostrarMensaje('success', 'Éxito', 'Reserva creada exitosamente');
         this.mostrarModalReserva = false;
+        this.cargarReservas();
       },
       error: (error) => {
         this.mostrarMensaje('error', 'Error', error.error?.error || 'No se pudo crear la reserva');
@@ -146,24 +209,17 @@ export class EspacioDetalleComponent implements OnInit {
   }
 
   /**
+   * Cerrar modal de reserva
+   */
+  cerrarModal(): void {
+    this.mostrarModalReserva = false;
+  }
+
+  /**
    * Volver a la lista de espacios
    */
   volverALista(): void {
     this.router.navigate(['/espacios']);
-  }
-
-  /**
-   * Navegar al calendario del espacio
-   */
-  verCalendario(): void {
-    this.router.navigate(['/espacios/calendario', this.espacioId]);
-  }
-
-  /**
-   * Obtener severidad del tag según disponibilidad
-   */
-  obtenerSeveridadDisponibilidad(disponible: boolean): 'success' | 'danger' {
-    return disponible ? 'success' : 'danger';
   }
 
   /**

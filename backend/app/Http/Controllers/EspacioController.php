@@ -9,23 +9,58 @@ use Illuminate\Support\Facades\Validator;
 class EspacioController extends Controller
 {
     /**
-     * Listar todos los espacios
+     * @OA\Get(
+     *     path="/espacios",
+     *     summary="Listar todos los espacios",
+     *     tags={"Espacios"},
+     *     @OA\Parameter(
+     *         name="tipo",
+     *         in="query",
+     *         description="Filtrar por tipo de espacio",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="disponible",
+     *         in="query",
+     *         description="Filtrar por disponibilidad (0 o 1)",
+     *         required=false,
+     *         @OA\Schema(type="boolean")
+     *     ),
+     *     @OA\Parameter(
+     *         name="capacidad_minima",
+     *         in="query",
+     *         description="Filtrar por capacidad mínima",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de espacios",
+     *         @OA\JsonContent(type="array", @OA\Items(
+     *             @OA\Property(property="id", type="integer", example=1),
+     *             @OA\Property(property="nombre", type="string", example="Sala de Conferencias A"),
+     *             @OA\Property(property="descripcion", type="string"),
+     *             @OA\Property(property="capacidad", type="integer", example=50),
+     *             @OA\Property(property="tipo", type="string", example="Sala de Conferencias"),
+     *             @OA\Property(property="imagen_url", type="string"),
+     *             @OA\Property(property="disponible", type="boolean")
+     *         ))
+     *     )
+     * )
      */
     public function index(Request $request)
     {
         $query = Espacio::query();
 
-        // Filtro por tipo
         if ($request->has('tipo')) {
             $query->where('tipo', $request->tipo);
         }
 
-        // Filtro por disponibilidad
         if ($request->has('disponible')) {
             $query->where('disponible', $request->disponible);
         }
 
-        // Filtro por capacidad mínima
         if ($request->has('capacidad_minima')) {
             $query->where('capacidad', '>=', $request->capacidad_minima);
         }
@@ -36,7 +71,34 @@ class EspacioController extends Controller
     }
 
     /**
-     * Crear nuevo espacio (solo admin)
+     * @OA\Post(
+     *     path="/espacios",
+     *     summary="Crear nuevo espacio",
+     *     tags={"Espacios"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"nombre","capacidad","tipo"},
+     *             @OA\Property(property="nombre", type="string", example="Sala de Conferencias A"),
+     *             @OA\Property(property="descripcion", type="string", example="Sala amplia con proyector"),
+     *             @OA\Property(property="capacidad", type="integer", example=50),
+     *             @OA\Property(property="tipo", type="string", example="Sala de Conferencias"),
+     *             @OA\Property(property="imagen_url", type="string", example="https://example.com/imagen.jpg"),
+     *             @OA\Property(property="disponible", type="boolean", example=true)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Espacio creado exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="mensaje", type="string"),
+     *             @OA\Property(property="espacio", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="No autenticado"),
+     *     @OA\Response(response=422, description="Errores de validación")
+     * )
      */
     public function store(Request $request)
     {
@@ -62,7 +124,32 @@ class EspacioController extends Controller
     }
 
     /**
-     * Mostrar un espacio específico
+     * @OA\Get(
+     *     path="/espacios/{id}",
+     *     summary="Obtener un espacio específico",
+     *     tags={"Espacios"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID del espacio",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Detalles del espacio",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="id", type="integer"),
+     *             @OA\Property(property="nombre", type="string"),
+     *             @OA\Property(property="descripcion", type="string"),
+     *             @OA\Property(property="capacidad", type="integer"),
+     *             @OA\Property(property="tipo", type="string"),
+     *             @OA\Property(property="imagen_url", type="string"),
+     *             @OA\Property(property="disponible", type="boolean")
+     *         )
+     *     ),
+     *     @OA\Response(response=404, description="Espacio no encontrado")
+     * )
      */
     public function show($id)
     {
@@ -76,7 +163,40 @@ class EspacioController extends Controller
     }
 
     /**
-     * Actualizar espacio (solo admin)
+     * @OA\Put(
+     *     path="/espacios/{id}",
+     *     summary="Actualizar un espacio",
+     *     tags={"Espacios"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID del espacio",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(
+     *             @OA\Property(property="nombre", type="string"),
+     *             @OA\Property(property="descripcion", type="string"),
+     *             @OA\Property(property="capacidad", type="integer"),
+     *             @OA\Property(property="tipo", type="string"),
+     *             @OA\Property(property="imagen_url", type="string"),
+     *             @OA\Property(property="disponible", type="boolean")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Espacio actualizado exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="mensaje", type="string"),
+     *             @OA\Property(property="espacio", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="No autenticado"),
+     *     @OA\Response(response=404, description="Espacio no encontrado"),
+     *     @OA\Response(response=422, description="Errores de validación")
+     * )
      */
     public function update(Request $request, $id)
     {
@@ -108,7 +228,28 @@ class EspacioController extends Controller
     }
 
     /**
-     * Eliminar espacio (solo admin)
+     * @OA\Delete(
+     *     path="/espacios/{id}",
+     *     summary="Eliminar un espacio",
+     *     tags={"Espacios"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID del espacio",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Espacio eliminado exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="mensaje", type="string", example="Espacio eliminado exitosamente")
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="No autenticado"),
+     *     @OA\Response(response=404, description="Espacio no encontrado")
+     * )
      */
     public function destroy($id)
     {
