@@ -12,6 +12,7 @@ Route::post('login', [AuthController::class, 'login']);
 // Rutas de espacios (públicas - solo lectura)
 Route::get('espacios', [EspacioController::class, 'index']);
 Route::get('espacios/{id}', [EspacioController::class, 'show']);
+Route::get('espacios/{id}/reservas', [ReservaController::class, 'reservasPorEspacio']);
 
 // Rutas protegidas (requieren autenticación)
 Route::middleware('auth:api')->group(function () {

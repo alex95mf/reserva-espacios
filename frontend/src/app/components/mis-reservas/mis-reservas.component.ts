@@ -83,7 +83,7 @@ export class MisReservasComponent implements OnInit {
   }
 
   cancelarReserva(reserva: Reserva): void {
-    this.reservaService.cancelar(reserva.id!).subscribe({
+    this.reservaService.eliminar(reserva.id!).subscribe({
       next: () => {
         this.mostrarMensaje('success', 'Éxito', 'Reserva cancelada exitosamente');
         this.cargarReservas();

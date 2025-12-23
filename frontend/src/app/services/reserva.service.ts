@@ -1,33 +1,55 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Reserva } from '../models/reserva.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReservaService {
-  private apiUrl = 'http://localhost:8000/api/reservas';
+  private apiUrl = `${environment.apiUrl}/reservas`;
 
   constructor(private http: HttpClient) {}
 
-  listar(): Observable<Reserva[]> {
-    return this.http.get<Reserva[]>(this.apiUrl);
+  /**
+   * Listar todas las reservas del usuario autenticado
+   */
+  listar(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
   }
 
-  obtenerPorId(id: number): Observable<Reserva> {
-    return this.http.get<Reserva>(`${this.apiUrl}/${id}`);
+  /**
+   * Obtener una reserva específica por ID
+   */
+  obtener(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
 
+  /**
+   * Crear una nueva reserva
+   */
   crear(reserva: any): Observable<any> {
-    return this.http.post(this.apiUrl, reserva);
+    return this.http.post<any>(this.apiUrl, reserva);
   }
 
+  /**
+   * Actualizar una reserva existente
+   */
   actualizar(id: number, reserva: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, reserva);
+    return this.http.put<any>(`${this.apiUrl}/${id}`, reserva);
   }
 
-  cancelar(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+  /**
+   * Cancelar/eliminar una reserva
+   */
+  eliminar(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  /**
+   * Obtener reservas de un espacio específico (público)
+   */
+  obtenerPorEspacio(espacioId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl.replace('/reservas', '')}/espacios/${espacioId}/reservas`);
   }
 }

@@ -1,0 +1,127 @@
+<!-- Toast para notificaciones -->
+<p-toast></p-toast>
+
+<!-- Contenedor principal del calendario -->
+<div class="calendario-container">
+  <p-card class="calendario-card">
+    
+    <!-- Header con botón de volver e información del espacio -->
+    <ng-template pTemplate="header">
+      <div class="card-header-custom">
+        <p-button 
+          icon="pi pi-arrow-left" 
+          label="Volver a espacios"
+          (onClick)="volverALista()"
+          [outlined]="true"
+          severity="secondary"
+        ></p-button>
+        <div class="espacio-info" *ngIf="espacio">
+          <h2>{{ espacio.nombre }}</h2>
+          <p>{{ espacio.descripcion }}</p>
+        </div>
+      </div>
+    </ng-template>
+
+    <!-- Indicador de carga -->
+    <div *ngIf="cargando" class="loading-container">
+      <i class="pi pi-spin pi-spinner"></i>
+      <p>Cargando calendario...</p>
+    </div>
+
+    <!-- Calendario de FullCalendar -->
+    <div *ngIf="!cargando" class="calendar-wrapper">
+      <full-calendar [options]="calendarOptions"></full-calendar>
+    </div>
+
+    <!-- Footer con leyenda de colores -->
+    <ng-template pTemplate="footer">
+      <div class="calendar-legend">
+        <div class="legend-item">
+          <span class="legend-color reservado"></span>
+          <span>Horarios reservados</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color disponible"></span>
+          <span>Horarios disponibles (click para reservar)</span>
+        </div>
+      </div>
+    </ng-template>
+  </p-card>
+</div>
+
+<!-- Modal para crear nueva reserva desde el calendario -->
+<p-dialog 
+  header="Nueva Reserva"
+  [(visible)]="mostrarModalReserva"
+  [modal]="true"
+  [breakpoints]="{'960px': '90vw'}"
+  [style]="{width: '500px'}"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="modal-reserva-calendario"
+>
+  <div class="modal-body-reserva">
+    
+    <!-- Campo: Nombre del evento -->
+    <div class="p-field mb-3">
+      <label for="nombreEvento">NOMBRE DEL EVENTO</label>
+      <input 
+        type="text"
+        pInputText 
+        id="nombreEvento" 
+        [(ngModel)]="nombreEvento"
+        placeholder="Ej: Reunión de Equipo"
+        class="w-full"
+      />
+    </div>
+
+    <!-- Campo: Fecha y hora de inicio -->
+    <div class="p-field mb-3">
+      <label for="fechaInicio">FECHA Y HORA DE INICIO</label>
+      <p-calendar 
+        [(ngModel)]="fechaInicio"
+        [showTime]="true"
+        [showSeconds]="true"
+        placeholder="Seleccione fecha y hora"
+        dateFormat="dd/mm/yy"
+        [showIcon]="true"
+        iconDisplay="input"
+        styleClass="w-full"
+        inputStyleClass="w-full"
+      ></p-calendar>
+    </div>
+
+    <!-- Campo: Fecha y hora de fin -->
+    <div class="p-field">
+      <label for="fechaFin">FECHA Y HORA DE FIN</label>
+      <p-calendar 
+        [(ngModel)]="fechaFin"
+        [showTime]="true"
+        [showSeconds]="true"
+        [minDate]="fechaInicio || undefined"
+        placeholder="Seleccione fecha y hora"
+        dateFormat="dd/mm/yy"
+        [showIcon]="true"
+        iconDisplay="input"
+        styleClass="w-full"
+        inputStyleClass="w-full"
+      ></p-calendar>
+    </div>
+  </div>
+
+  <!-- Botones del modal -->
+  <ng-template pTemplate="footer">
+    <p-button 
+      label="Cancelar"
+      icon="pi pi-times"
+      (onClick)="cerrarModal()"
+      severity="secondary"
+      [outlined]="true"
+    ></p-button>
+    <p-button 
+      label="Confirmar Reserva"
+      icon="pi pi-check"
+      (onClick)="crearReserva()"
+    ></p-button>
+  </ng-template>
+</p-dialog>
