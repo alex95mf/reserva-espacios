@@ -8,14 +8,12 @@ import { AuthService } from '../../services/auth.service';
 import { Espacio } from '../../models/espacio.model';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
+import { TagModule } from 'primeng/tag';
 import { DropdownModule } from 'primeng/dropdown';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { CheckboxModule } from 'primeng/checkbox';
+import { InputTextModule } from 'primeng/inputtext';
 import { DialogModule } from 'primeng/dialog';
 import { CalendarModule } from 'primeng/calendar';
-import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
-import { TagModule } from 'primeng/tag';
 import { MessageService } from 'primeng/api';
 
 @Component({
@@ -26,14 +24,12 @@ import { MessageService } from 'primeng/api';
     FormsModule,
     CardModule,
     ButtonModule,
+    TagModule,
     DropdownModule,
-    InputNumberModule,
-    CheckboxModule,
+    InputTextModule,
     DialogModule,
     CalendarModule,
-    InputTextModule,
-    ToastModule,
-    TagModule
+    ToastModule
   ],
   providers: [MessageService],
   templateUrl: './espacios-lista.component.html',
@@ -41,28 +37,39 @@ import { MessageService } from 'primeng/api';
 })
 export class EspaciosListaComponent implements OnInit {
   espacios: Espacio[] = [];
-  espaciosFiltrados: Espacio[] = [];
   cargando = false;
   
-  // Filtros
-  tiposUnicos: any[] = [];
-  tipoSeleccionado: string = '';
-  capacidadMinima: number | null = null;
-  soloDisponibles = false;
+  filtros: any = {
+    tipo: undefined,
+    capacidad_minima: undefined,
+    disponible: undefined
+  };
 
-  // Modal de reserva
+  tiposEspacio = [
+    { label: 'Sala de Conferencias', value: 'Sala de Conferencias' },
+    { label: 'Auditorio', value: 'Auditorio' },
+    { label: 'Sala de Reuniones', value: 'Sala de Reuniones' },
+    { label: 'Sala Ejecutiva', value: 'Sala Ejecutiva' },
+    { label: 'Espacio Coworking', value: 'Espacio Coworking' }
+  ];
+
+  opcionesDisponibilidad = [
+    { label: 'Disponible', value: true },
+    { label: 'No disponible', value: false }
+  ];
+  
   mostrarModalReserva = false;
   espacioSeleccionado: Espacio | null = null;
   nombreEvento = '';
   fechaInicio: Date | null = null;
   fechaFin: Date | null = null;
-  cargandoReserva = false;
   fechaMinima = new Date();
+  cargandoReserva = false;
 
   constructor(
     private espacioService: EspacioService,
     private reservaService: ReservaService,
-    public authService: AuthService,
+    private authService: AuthService,
     private router: Router,
     private messageService: MessageService
   ) {}
@@ -75,15 +82,13 @@ export class EspaciosListaComponent implements OnInit {
   }
 
   /**
-   * Cargar todos los espacios desde el backend
+   * Cargar espacios desde la API
    */
   cargarEspacios(): void {
     this.cargando = true;
     this.espacioService.listar().subscribe({
       next: (espacios) => {
         this.espacios = espacios;
-        this.espaciosFiltrados = espacios;
-        this.extraerTiposUnicos();
         this.cargando = false;
       },
       error: () => {
@@ -94,48 +99,47 @@ export class EspaciosListaComponent implements OnInit {
   }
 
   /**
-   * Extraer tipos únicos de espacios para el filtro
-   */
-  extraerTiposUnicos(): void {
-    const tipos = [...new Set(this.espacios.map(e => e.tipo))];
-    this.tiposUnicos = tipos.map(tipo => ({ label: tipo, value: tipo }));
-  }
-
-  /**
-   * Aplicar filtros a la lista de espacios
+   * Aplicar filtros de búsqueda
    */
   aplicarFiltros(): void {
-    this.espaciosFiltrados = this.espacios.filter(espacio => {
-      const cumpleTipo = !this.tipoSeleccionado || espacio.tipo === this.tipoSeleccionado;
-      const cumpleCapacidad = !this.capacidadMinima || espacio.capacidad >= this.capacidadMinima;
-      const cumpleDisponible = !this.soloDisponibles || espacio.disponible;
-      
-      return cumpleTipo && cumpleCapacidad && cumpleDisponible;
+    this.cargando = true;
+    this.espacioService.listar(this.filtros).subscribe({
+      next: (espacios) => {
+        this.espacios = espacios;
+        this.cargando = false;
+      },
+      error: () => {
+        this.cargando = false;
+        this.mostrarMensaje('error', 'Error', 'No se pudieron aplicar los filtros');
+      }
     });
   }
 
   /**
-   * Limpiar todos los filtros aplicados
+   * Limpiar filtros y recargar todos los espacios
    */
   limpiarFiltros(): void {
-    this.tipoSeleccionado = '';
-    this.capacidadMinima = null;
-    this.soloDisponibles = false;
-    this.espaciosFiltrados = this.espacios;
+    this.filtros = {
+      tipo: null,
+      capacidad_minima: null,
+      disponible: null
+    };
+    this.cargarEspacios();
   }
 
   /**
-   * Navegar al detalle del espacio
+   * Ver detalle de un espacio
    */
   verDetalle(espacio: Espacio): void {
     this.router.navigate(['/espacios/detalle', espacio.id]);
   }
 
   /**
-   * Abrir modal para crear una reserva
+   * Abrir modal de reserva
    */
   abrirModalReserva(espacio: Espacio): void {
     if (!this.authService.estaAutenticado()) {
+      this.mostrarMensaje('warn', 'Advertencia', 'Debes iniciar sesión para reservar');
       this.router.navigate(['/iniciar-sesion']);
       return;
     }
@@ -155,10 +159,10 @@ export class EspaciosListaComponent implements OnInit {
   }
 
   /**
-   * Crear una nueva reserva
+   * Crear nueva reserva
    */
   crearReserva(): void {
-    if (!this.espacioSeleccionado || !this.nombreEvento || !this.fechaInicio || !this.fechaFin) {
+    if (!this.nombreEvento || !this.fechaInicio || !this.fechaFin) {
       this.mostrarMensaje('warn', 'Advertencia', 'Complete todos los campos');
       return;
     }
@@ -166,7 +170,7 @@ export class EspaciosListaComponent implements OnInit {
     this.cargandoReserva = true;
     
     const reserva = {
-      espacio_id: this.espacioSeleccionado.id!,
+      espacio_id: this.espacioSeleccionado!.id!,
       nombre_evento: this.nombreEvento,
       fecha_inicio: this.formatearFechaParaAPI(this.fechaInicio),
       fecha_fin: this.formatearFechaParaAPI(this.fechaFin)
@@ -200,7 +204,7 @@ export class EspaciosListaComponent implements OnInit {
   }
 
   /**
-   * Navegar a la página de mis reservas
+   * Ver mis reservas
    */
   verMisReservas(): void {
     this.router.navigate(['/mis-reservas']);

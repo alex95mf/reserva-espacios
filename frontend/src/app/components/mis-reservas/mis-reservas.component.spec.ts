@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MisReservasComponent } from './mis-reservas.component';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
+import { MessageService } from 'primeng/api';
 
 describe('MisReservasComponent', () => {
   let component: MisReservasComponent;
@@ -8,7 +11,13 @@ describe('MisReservasComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MisReservasComponent]
+      imports: [MisReservasComponent],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        MessageService
+      ]
     })
     .compileComponents();
 

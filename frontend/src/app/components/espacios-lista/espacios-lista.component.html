@@ -1,102 +1,114 @@
+<!-- Toast para notificaciones -->
 <p-toast></p-toast>
 
-<div class="container">
-  <div class="header">
-    <h1>Espacios Disponibles</h1>
-    <p-button 
-      *ngIf="authService.estaAutenticado()"
-      label="Mis Reservas"
-      icon="pi pi-calendar"
-      (onClick)="verMisReservas()"
-      [outlined]="true"
-    ></p-button>
-  </div>
-
-  <!-- Filtros -->
+<!-- Contenedor principal -->
+<div class="espacios-container">
+  
+  <!-- Card de filtros -->
   <p-card class="filtros-card">
+    <!-- Header del card de filtros -->
+    <ng-template pTemplate="header">
+      <h2 class="filtros-titulo">BUSCAR ESPACIOS</h2>
+    </ng-template>
+
+    <!-- Formulario de filtros -->
     <div class="filtros-grid">
-      <div class="p-field">
-        <label for="tipo">Tipo de Espacio</label>
+      
+      <!-- Filtro por tipo -->
+      <div class="filtro-item">
+        <label for="tipo">TIPO DE ESPACIO</label>
         <p-dropdown 
-          id="tipo"
-          [options]="tiposUnicos"
-          [(ngModel)]="tipoSeleccionado"
-          (onChange)="aplicarFiltros()"
+          [(ngModel)]="filtros.tipo"
+          [options]="tiposEspacio"
           placeholder="Todos los tipos"
           [showClear]="true"
-          styleClass="w-full"
+          optionLabel="label"
+          optionValue="value"
         ></p-dropdown>
       </div>
 
-      <div class="p-field">
-        <label for="capacidad">Capacidad Mínima</label>
-        <p-inputNumber 
-          id="capacidad"
-          [(ngModel)]="capacidadMinima"
-          (onInput)="aplicarFiltros()"
-          placeholder="Ej: 10"
-          [showButtons]="true"
-          [min]="0"
-          styleClass="w-full"
-        ></p-inputNumber>
+      <!-- Filtro por capacidad -->
+      <div class="filtro-item">
+        <label for="capacidad">CAPACIDAD MÍNIMA</label>
+        <input 
+          type="number" 
+          pInputText 
+          [(ngModel)]="filtros.capacidad_minima"
+          placeholder="Ej: 20"
+          min="1"
+        />
       </div>
 
-      <div class="p-field checkbox-field">
-        <p-checkbox 
-          [(ngModel)]="soloDisponibles"
-          (onChange)="aplicarFiltros()"
-          [binary]="true"
-          inputId="disponibles"
-        ></p-checkbox>
-        <label for="disponibles" class="ml-2">Solo disponibles</label>
+      <!-- Filtro por disponibilidad -->
+      <div class="filtro-item">
+        <label for="disponible">DISPONIBILIDAD</label>
+        <p-dropdown 
+          [(ngModel)]="filtros.disponible"
+          [options]="opcionesDisponibilidad"
+          placeholder="Todos"
+          [showClear]="true"
+          optionLabel="label"
+          optionValue="value"
+        ></p-dropdown>
       </div>
 
-      <div class="p-field">
-        <label>&nbsp;</label>
+      <!-- Botones de acción -->
+      <div class="filtro-acciones">
         <p-button 
-          label="Limpiar Filtros"
-          icon="pi pi-filter-slash"
+          label="Buscar"
+          icon="pi pi-search"
+          (onClick)="aplicarFiltros()"
+        ></p-button>
+        <p-button 
+          label="Limpiar"
+          icon="pi pi-times"
           (onClick)="limpiarFiltros()"
+          severity="secondary"
           [outlined]="true"
-          styleClass="w-full"
         ></p-button>
       </div>
     </div>
   </p-card>
 
-  <!-- Loading -->
+  <!-- Indicador de carga -->
   <div *ngIf="cargando" class="loading-container">
-    <i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+    <i class="pi pi-spin pi-spinner"></i>
     <p>Cargando espacios...</p>
   </div>
 
-  <!-- Grid de Espacios -->
-  <div class="espacios-grid" *ngIf="!cargando">
-    <p-card *ngFor="let espacio of espaciosFiltrados" class="espacio-card">
+  <!-- Grid de espacios -->
+  <div *ngIf="!cargando" class="espacios-grid">
+    <p-card *ngFor="let espacio of espacios" class="espacio-card">
+      
+      <!-- Imagen del espacio -->
       <ng-template pTemplate="header">
-        <img [src]="espacio.imagen_url" [alt]="espacio.nombre" class="espacio-imagen">
-      </ng-template>
-      
-      <h3>{{ espacio.nombre }}</h3>
-      <p class="descripcion">{{ espacio.descripcion }}</p>
-      
-      <div class="detalles">
-        <div class="detalle-item">
-          <i class="pi pi-tag"></i>
-          <span>{{ espacio.tipo }}</span>
-        </div>
-        <div class="detalle-item">
-          <i class="pi pi-users"></i>
-          <span>{{ espacio.capacidad }} personas</span>
-        </div>
-        <div class="detalle-item">
+        <div class="card-image-wrapper">
+          <img [src]="espacio.imagen_url" [alt]="espacio.nombre" class="card-image">
           <p-tag 
             [value]="espacio.disponible ? 'Disponible' : 'No disponible'"
             [severity]="espacio.disponible ? 'success' : 'danger'"
+            styleClass="disponibilidad-tag"
           ></p-tag>
+        </div>
+      </ng-template>
+
+      <!-- Contenido de la tarjeta -->
+      <h3 class="espacio-nombre">{{ espacio.nombre }}</h3>
+      <p class="espacio-descripcion">{{ espacio.descripcion }}</p>
+
+      <!-- Información del espacio -->
+      <div class="espacio-info">
+        <div class="info-badge">
+          <i class="pi pi-tag"></i>
+          <span>{{ espacio.tipo }}</span>
+        </div>
+        <div class="info-badge">
+          <i class="pi pi-users"></i>
+          <span>{{ espacio.capacidad }} personas</span>
         </div>
       </div>
 
+      <!-- Botones de la tarjeta -->
       <ng-template pTemplate="footer">
         <div class="card-footer-buttons">
           <p-button 
@@ -117,29 +129,32 @@
         </div>
       </ng-template>
     </p-card>
+  </div>
 
-    <!-- Sin resultados -->
-    <div *ngIf="espaciosFiltrados.length === 0" class="sin-resultados">
-      <i class="pi pi-inbox" style="font-size: 4rem; color: #6c757d;"></i>
-      <p>No se encontraron espacios con los filtros seleccionados</p>
-    </div>
+  <!-- Mensaje cuando no hay espacios -->
+  <div *ngIf="!cargando && espacios.length === 0" class="empty-state">
+    <i class="pi pi-inbox"></i>
+    <h3>No se encontraron espacios</h3>
+    <p>Intenta ajustar los filtros de búsqueda</p>
   </div>
 </div>
 
-<!-- Modal de Reserva -->
+<!-- Modal para reservar -->
 <p-dialog 
   [header]="'Reservar: ' + (espacioSeleccionado?.nombre || '')"
   [(visible)]="mostrarModalReserva"
   [modal]="true"
   [breakpoints]="{'960px': '90vw'}"
   [style]="{width: '600px'}"
-  [contentStyle]="{overflow: 'visible', 'min-height': '650px'}"
+  [contentStyle]="{overflow: 'visible', 'min-height': '500px'}"
   [draggable]="false"
   [resizable]="false"
   [dismissableMask]="true"
   styleClass="modal-reserva"
 >
   <div class="modal-body-reserva">
+    
+    <!-- Campo: Nombre del evento -->
     <div class="p-field mb-3">
       <label for="nombreEvento">NOMBRE DEL EVENTO</label>
       <input 
@@ -152,6 +167,7 @@
       />
     </div>
 
+    <!-- Campo: Fecha y hora de inicio -->
     <div class="p-field mb-3">
       <label for="fechaInicio">FECHA Y HORA DE INICIO</label>
       <p-calendar 
@@ -169,6 +185,7 @@
       ></p-calendar>
     </div>
 
+    <!-- Campo: Fecha y hora de fin -->
     <div class="p-field">
       <label for="fechaFin">FECHA Y HORA DE FIN</label>
       <p-calendar 
@@ -187,6 +204,7 @@
     </div>
   </div>
 
+  <!-- Botones del modal -->
   <ng-template pTemplate="footer">
     <p-button 
       label="Cancelar"
