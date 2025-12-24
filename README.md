@@ -1,41 +1,41 @@
 # Sistema de Reserva de Espacios
 
-Sistema full-stack desarrollado con Angular y Laravel para la gestión integral de espacios y reservas de eventos.
+Aplicación full-stack para gestión de espacios y reservas de eventos, construida con Angular y Laravel.
 
 ---
 
-## Descripción del Proyecto
+## Descripción
 
-Esta aplicación web permite a los usuarios navegar por un catálogo de espacios disponibles, realizar reservas para eventos con validación automática de disponibilidad, y gestionar sus propias reservas. Los usuarios autenticados con permisos de administrador pueden realizar operaciones CRUD completas sobre los espacios.
+Este proyecto es un sistema de gestión de espacios donde los usuarios pueden explorar espacios disponibles, hacer reservas para sus eventos y administrar sus propias reservas. Los administradores tienen acceso completo para gestionar el catálogo de espacios.
 
-El sistema implementa autenticación segura mediante JWT, diseño responsivo adaptable a diferentes dispositivos, y un calendario visual para facilitar la planificación de eventos.
+He implementado autenticación JWT para mantener las sesiones seguras, un calendario interactivo para visualizar disponibilidad, y validaciones que previenen reservas en conflicto. El diseño es responsivo y funciona bien en cualquier dispositivo.
 
 ---
 
 ## Stack Tecnológico
 
 **Backend**
-- Laravel 11 como framework principal
-- PostgreSQL para persistencia de datos
-- Autenticación JWT para manejo de sesiones
-- Suite de testing con PHPUnit (24 tests implementados)
-- Documentación automática con Swagger/OpenAPI
+- Laravel 11 - Framework principal
+- PostgreSQL - Base de datos
+- JWT Auth - Manejo de autenticación
+- PHPUnit - 24 tests implementados
+- Swagger - Documentación automática de la API
 
 **Frontend**
-- Angular 18 con arquitectura de Standalone Components
-- PrimeNG 17 para componentes de interfaz
-- FullCalendar 6 para visualización de calendario
-- TypeScript para tipado estático
-- RxJS para programación reactiva
-- Testing con Jasmine/Karma (16 tests implementados)
+- Angular 18 con Standalone Components
+- PrimeNG 17 - Componentes UI
+- FullCalendar 6 - Sistema de calendario
+- TypeScript - Tipado estático
+- RxJS - Manejo de streams y estado reactivo
+- Jasmine/Karma - 16 tests implementados
 
 ---
 
-## Estructura del Repositorio
+## Estructura del Proyecto
 
 ```
 reserva-espacios/
-├── backend/
+├── backend/                 # API Laravel
 │   ├── app/
 │   │   ├── Http/Controllers/
 │   │   ├── Models/
@@ -47,7 +47,7 @@ reserva-espacios/
 │   ├── routes/
 │   ├── tests/
 │   └── storage/api-docs/
-├── frontend/
+├── frontend/                # SPA Angular
 │   ├── src/
 │   │   ├── app/
 │   │   │   ├── components/
@@ -61,43 +61,45 @@ reserva-espacios/
 
 ---
 
-## Requisitos del Sistema
+## Requisitos
 
-Antes de comenzar, asegúrate de contar con:
+Se necesita tener instalado:
 
-- Node.js versión 18 o superior
-- PHP 8.2 o superior
-- Composer (gestor de dependencias de PHP)
-- PostgreSQL 14 o superior
+- Node.js 18+
+- PHP 8.2+
+- Composer
+- PostgreSQL 14+
 - Git
 
 ---
 
-## Guía de Instalación
+## Instalación
 
-### Paso 1: Clonar el Repositorio
+### 1. Clonar el proyecto
 
 ```bash
 git clone https://github.com/alex95mf/reserva-espacios.git
 cd reserva-espacios
 ```
 
-### Paso 2: Configuración del Backend
+### 2. Configurar el Backend
 
-**Instalar dependencias de PHP**
+**Instalar dependencias**
 
 ```bash
 cd backend
 composer install
 ```
 
-**Configurar variables de entorno**
+**Configurar el entorno**
+
+Copiar el archivo de ejemplo y ajustar las credenciales de la base de datos:
 
 ```bash
 cp .env.example .env
 ```
 
-Edita el archivo `.env` con tus credenciales de base de datos:
+Edita `.env` con los datos:
 
 ```env
 DB_CONNECTION=pgsql
@@ -110,37 +112,39 @@ DB_PASSWORD=tu_contraseña
 JWT_SECRET=tu_clave_secreta_jwt
 ```
 
-**Generar claves de aplicación**
+**Generar claves**
 
 ```bash
 php artisan key:generate
 php artisan jwt:secret
 ```
 
-**Ejecutar migraciones y datos de prueba**
+**Preparar la base de datos**
+
+Esto creará las tablas y poblará la base con datos de prueba:
 
 ```bash
 php artisan migrate --seed
 ```
 
-**Generar documentación de API**
+**Generar documentación de la API**
 
 ```bash
 php artisan l5-swagger:generate
 ```
 
-### Paso 3: Configuración del Frontend
+### 3. Configurar el Frontend
 
-**Instalar dependencias de Node**
+**Instalar dependencias**
 
 ```bash
 cd frontend
 npm install
 ```
 
-**Configurar URL de API (opcional)**
+**Configurar la URL del backend (opcional)**
 
-Si tu backend no está en `http://localhost:8000`, edita el archivo `frontend/src/environments/environment.ts`:
+Si el backend no corre en `http://localhost:8000`, actualizar `frontend/src/environments/environment.ts`:
 
 ```typescript
 export const environment = {
@@ -151,218 +155,205 @@ export const environment = {
 
 ---
 
-## Ejecución del Proyecto
+## Ejecutar el Proyecto
 
-### Iniciar el Backend
+**Backend**
 
 ```bash
 cd backend
 php artisan serve
 ```
 
-El servidor backend estará disponible en `http://localhost:8000`
+Se ejecuta en: `http://localhost:8000`
 
-### Iniciar el Frontend
+**Frontend**
 
-En una terminal separada:
+En otra terminal:
 
 ```bash
 cd frontend
 ng serve
 ```
 
-La aplicación frontend estará disponible en `http://localhost:4200`
+Corre en: `http://localhost:4200`
 
 ---
 
-## Suite de Testing
+## Tests
 
-### Tests del Backend
+He implementado tests tanto para el backend como para el frontend. En total son 40 tests que cubren los flujos principales de la aplicación.
 
-El backend cuenta con 24 tests que cubren:
-- Autenticación de usuarios (6 tests)
-- Gestión de espacios (8 tests)
-- Sistema de reservas (8 tests)
-- Casos de uso básicos (2 tests)
-
-Para ejecutar los tests:
+**Backend (PHPUnit)**
 
 ```bash
 cd backend
 php artisan test
 ```
 
-### Tests del Frontend
+Cobertura:
+- 6 tests de autenticación
+- 8 tests de espacios
+- 8 tests de reservas
+- 2 tests de casos de uso base
 
-El frontend implementa 16 tests que validan los componentes principales y servicios de la aplicación.
-
-Para ejecutar los tests:
+**Frontend (Jasmine/Karma)**
 
 ```bash
 cd frontend
 ng test
 ```
 
-**Cobertura total del proyecto: 40 tests**
+16 tests que validan componentes principales y servicios.
 
 ---
 
 ## Documentación de la API
 
-La documentación completa de la API está disponible a través de Swagger UI en:
+Se puede explora toda la API en Swagger:
 
 ```
 http://localhost:8000/api/documentation
 ```
 
-### Endpoints Principales
+### Endpoints principales
 
 **Autenticación**
-- POST `/api/registrar` - Registro de nuevos usuarios
-- POST `/api/login` - Autenticación (retorna token JWT)
-- GET `/api/yo` - Información del usuario autenticado
-- POST `/api/logout` - Cierre de sesión
+- `POST /api/registrar` - Crear cuenta nueva
+- `POST /api/login` - Iniciar sesión (devuelve token JWT)
+- `GET /api/yo` - Info del usuario actual
+- `POST /api/logout` - Cerrar sesión
 
-**Gestión de Espacios**
-- GET `/api/espacios` - Lista de espacios con filtros opcionales
-- POST `/api/espacios` - Crear nuevo espacio (requiere autenticación)
-- GET `/api/espacios/{id}` - Detalle de un espacio
-- PUT `/api/espacios/{id}` - Actualizar espacio (requiere autenticación)
-- DELETE `/api/espacios/{id}` - Eliminar espacio (requiere autenticación)
+**Espacios**
+- `GET /api/espacios` - Listar espacios (soporta filtros)
+- `POST /api/espacios` - Crear espacio (requiere auth)
+- `GET /api/espacios/{id}` - Ver detalle
+- `PUT /api/espacios/{id}` - Actualizar (requiere auth)
+- `DELETE /api/espacios/{id}` - Eliminar (requiere auth)
 
-**Sistema de Reservas**
-- GET `/api/reservas` - Lista de reservas del usuario (requiere autenticación)
-- POST `/api/reservas` - Crear nueva reserva (requiere autenticación)
-- GET `/api/reservas/{id}` - Detalle de reserva (requiere autenticación)
-- PUT `/api/reservas/{id}` - Modificar reserva (requiere autenticación)
-- DELETE `/api/reservas/{id}` - Cancelar reserva (requiere autenticación)
+**Reservas**
+- `GET /api/reservas` - Mis reservas (requiere auth)
+- `POST /api/reservas` - Crear reserva (requiere auth)
+- `GET /api/reservas/{id}` - Ver detalle (requiere auth)
+- `PUT /api/reservas/{id}` - Modificar (requiere auth)
+- `DELETE /api/reservas/{id}` - Cancelar (requiere auth)
 
 ---
 
-## Funcionalidades Implementadas
+## Características Implementadas
 
-### Requerimientos Obligatorios
+### Lo esencial (requerimientos obligatorios)
 
-- Sistema completo de autenticación JWT con registro, login y logout
+- Sistema completo de autenticación con JWT
 - CRUD de espacios con filtros por tipo, capacidad y disponibilidad
-- Sistema de reservas con validación automática de superposición de horarios
-- Gestión de reservas por usuario con capacidad de ver, modificar y cancelar
-- API RESTful completamente documentada con Swagger
-- Suite completa de testing del backend (24 tests con PHPUnit)
-- Documentación detallada con instrucciones de instalación y uso
-- Migraciones de base de datos y seeders para datos de prueba
+- Sistema de reservas que valida automáticamente conflictos de horarios
+- Los usuarios pueden ver, modificar y cancelar sus propias reservas
+- API RESTful documentada con Swagger
+- 24 tests del backend con PHPUnit
+- Este README con instrucciones completas
+- Migraciones y seeders para la base de datos
 
-### Implementaciones Adicionales
+### Extras que agregué
 
-- Testing de componentes del frontend (16 tests con Jasmine/Karma)
-- Calendario interactivo con FullCalendar para visualización de reservas
-- Vista detallada de espacios con información completa
-- Sistema de notificaciones tipo toast para feedback del usuario
-- Diseño profesional y completamente responsivo con PrimeNG
-- Validaciones exhaustivas tanto en frontend como backend
-- Manejo robusto de errores con mensajes descriptivos
+- 16 tests del frontend con Jasmine/Karma
+- Calendario interactivo con FullCalendar
+- Vista detallada de cada espacio
+- Notificaciones toast para feedback del usuario
+- Diseño responsivo con PrimeNG
+- Validaciones en ambos lados (frontend y backend)
+- Manejo de errores con mensajes descriptivos
 
 ---
 
-## Nota Técnica sobre MC-Kit
+## Sobre MC-Kit
 
-### Contexto del Requerimiento
+### El requerimiento original
 
-El documento de especificaciones técnicas establece como obligatorio:
+Las especificaciones pedían usar MC-Table (de MC Kit) para el listado de espacios:
 
 > "ABM de espacios: Requerimiento obligatorio utilizar MC-Table (de MC Kit) en el listado."
 
-### Análisis de Compatibilidad Técnica
+### El problema que encontré
 
-Durante el desarrollo se identificó una incompatibilidad técnica entre la librería MC-Kit y la arquitectura del proyecto:
+MC-Kit no es compatible con la arquitectura moderna de Angular que usé en este proyecto. Específicamente:
 
-**Arquitectura del Proyecto**
+**Mi implementación**
+- Angular 18 con Standalone Components (la forma recomendada desde Angular 14+)
+- Arquitectura más limpia y mantenible
+- Mejor tree-shaking y performance
 
-Este proyecto utiliza Angular 18 con Standalone Components, que es la arquitectura recomendada por el equipo de Angular desde la versión 14. Esta aproximación moderna elimina la necesidad de NgModules, simplifica la estructura del código y mejora el tree-shaking.
+**MC-Kit**
+- Construido con NgModules (arquitectura legacy)
+- Requiere `@mckit/core` que no está en npm
+- Los componentes no son standalone
+- Genera errores de compilación al intentar integrarlo
 
-**Limitaciones de MC-Kit**
+### Lo que intenté
 
-MC-Kit fue desarrollado utilizando NgModules, la arquitectura legacy de Angular. Al intentar integrar la librería, se identificaron los siguientes problemas técnicos:
+1. Instalación directa desde GitHub - funcionó
+2. Importar componentes como standalone - falló (no son standalone)
+3. Crear un wrapper con NgModule - falló (dependencias faltantes)
+4. Compilar MC-Kit desde el código fuente - falló (archivos internos no encontrados)
 
-1. Dependencias internas que requieren `@mckit/core`, paquete no disponible en el registro npm público
-2. Componentes de MC-Kit que no son standalone y requieren declaración en NgModules
-3. Errores de compilación en el proceso de build de la librería (archivo `mc-component` no encontrado)
-4. Conflictos en el sistema de importaciones entre arquitecturas standalone y basadas en módulos
+### La solución
 
-**Intentos de Solución Documentados**
+Implementé la tabla de administración usando PrimeNG Table, que ofrece:
+- Funcionalidad completa de CRUD
+- Diseño profesional y consistente
+- Paginación, ordenamiento y filtros
+- Todo funcionando sin problemas
 
-1. Instalación directa desde repositorio GitHub: Exitosa
-2. Importación directa de componentes standalone: Falló debido a que los componentes no son standalone
-3. Creación de NgModule wrapper: Falló por dependencias no resueltas
-4. Compilación manual de MC-Kit desde el código fuente: Falló con error "Could not resolve './lib/entities/mc-component'"
+**¿Por qué elegí Standalone Components?**
 
-**Solución Implementada**
-
-Dada la imposibilidad técnica de utilizar MC-Kit, se implementó la funcionalidad equivalente utilizando PrimeNG Table en el módulo de administración de espacios. Esta implementación incluye:
-
-- Funcionalidad completa de CRUD (Crear, Leer, Actualizar, Eliminar)
-- Diseño profesional y consistente con el resto de la aplicación
-- Paginación, ordenamiento y acciones por fila
-- Rendimiento óptimo y totalmente funcional
-
-**Justificación Técnica**
-
-La decisión de utilizar Standalone Components sigue las mejores prácticas y recomendaciones oficiales del equipo de Angular. Esta arquitectura representa el futuro del framework y ofrece beneficios significativos en términos de mantenibilidad, rendimiento y developer experience.
-
-La incompatibilidad con MC-Kit no representa una limitación del proyecto, sino una restricción de la librería externa que no ha sido actualizada para soportar las características modernas de Angular.
+Es la dirección oficial que tomó Angular. Es más moderno, más simple de mantener y representa el futuro del framework. La incompatibilidad con MC-Kit es una limitación de esa librería, no del proyecto.
 
 ---
 
-## Sistema de Autenticación
+## Autenticación
 
-El sistema implementa autenticación basada en tokens JWT (JSON Web Tokens).
+El sistema usa JWT (JSON Web Tokens) para manejar las sesiones:
 
-**Flujo de Autenticación**
-
-1. El usuario se registra o inicia sesión proporcionando credenciales válidas
-2. El backend valida las credenciales y genera un token JWT firmado
-3. El frontend almacena el token en localStorage del navegador
-4. Todas las peticiones autenticadas incluyen el token en el encabezado HTTP:
+1. El usuario se registra o inicia sesión
+2. El backend genera un token JWT firmado
+3. El frontend guarda el token en localStorage
+4. Cada petición autenticada incluye el token:
    ```
    Authorization: Bearer {token}
    ```
-5. El backend valida el token en cada petición protegida
-6. Al cerrar sesión, el token se elimina del almacenamiento local
+5. El backend valida el token en endpoints protegidos
+6. Al cerrar sesión, el token se elimina
+
+Simple y seguro.
 
 ---
 
-## Características Destacadas del Diseño
+## Características del Diseño
 
-**Interfaz Adaptativa**
+**Navegación adaptativa**
+El navbar cambia según el estado del usuario. Si estás logueado, ves opciones adicionales según tus permisos.
 
-El navbar se adapta dinámicamente al estado de autenticación del usuario, mostrando opciones relevantes según sus permisos. El diseño es completamente responsivo y se ajusta a diferentes tamaños de pantalla.
+**Catálogo de espacios**
+Los espacios se muestran en cards con toda la info importante. Hay filtros para buscar por tipo, capacidad o disponibilidad.
 
-**Visualización de Datos**
+**Sistema de reservas**
+El modal de reservas valida fechas en tiempo real y previene que reserves un espacio ya ocupado. Las notificaciones te confirman cuando todo sale bien (o te avisan si algo falla).
 
-Los espacios se presentan en formato de cards con información visual clara. El sistema incluye filtros avanzados para búsqueda por tipo, capacidad y disponibilidad.
+**Calendario**
+Puedes ver todas las reservas de un espacio en formato calendario, lo que hace más fácil planificar tus eventos.
 
-**Sistema de Reservas**
-
-El modal de reservas incluye validación de fechas en tiempo real y prevención de superposición de horarios. Las notificaciones toast proporcionan feedback inmediato sobre el estado de las operaciones.
-
-**Calendario Interactivo**
-
-La vista de calendario permite visualizar todas las reservas de un espacio de forma gráfica, facilitando la planificación y evitando conflictos de horarios.
+**Responsivo**
+Todo funciona bien en desktop, tablet y móvil.
 
 ---
 
-## Información del Proyecto
+## Repositorios
 
-**Repositorios**
 - Principal: https://github.com/alex95mf/reserva-espacios
 - Mirror: https://github.com/wellinmart32/reserva-espacios
 
-**Desarrollo**
-
-Proyecto desarrollado como prueba técnica full-stack, demostrando competencias en desarrollo de APIs RESTful, aplicaciones web modernas, testing automatizado y documentación técnica.
-
 ---
 
-## Licencia
+## Notas Finales
 
-Este proyecto fue desarrollado como ejercicio técnico de evaluación.
+Este proyecto fue desarrollado como prueba técnica para demostrar competencias en desarrollo full-stack. Incluye desde arquitectura de APIs hasta testing automatizado, pasando por UX/UI y documentación técnica.
+
+Si tienes preguntas o sugerencias, no dudes en abrir un issue en el repositorio.
